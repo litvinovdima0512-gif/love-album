@@ -73,43 +73,50 @@
     </div>
 
     <script>
-        // ДАТА: 21 февраля 2026. (2026, 1, 21) т.к. февраль это 1
-        const startDate = new Date(2026, 1, 21, 0, 0, 0).getTime();
+     // Указываем дату строго в формате ISO
+const startDate = new Date("2026-02-21T00:00:00").getTime();
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const diff = now - startDate;
+function updateTimer() {
+    const now = new Date().getTime();
+    const diff = now - startDate;
 
-            if (diff < 0) {
-                document.getElementById("timer").innerHTML = "Наше время начнется 21 февраля! ✨";
-                return;
-            }
+    // Если дата еще не наступила (на всякий случай)
+    if (diff < 0) {
+        document.getElementById("timer").innerHTML = "Совсем скоро... ✨";
+        return;
+    }
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    // Расчеты
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
-            document.getElementById("timer").innerHTML = 
-                Мы вместе уже:<br>${days}д. ${hours}ч. ${mins}м. ${secs}с. 🥰;
-        }
+    // Вывод текста
+    document.getElementById("timer").innerHTML = 
+        "Мы вместе уже:<br>" + days + "д. " + hours + "ч. " + mins + "м. " + secs + "с. 🥰";
+}
 
-        // Летающие сердечки
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            heart.style.duration = Math.random() * 3 + 2 + 's';
-            heart.style.opacity = Math.random();
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }
+// Запускаем обновление каждую секунду
+setInterval(updateTimer, 1000);
 
-        setInterval(updateTimer, 1000);
-        setInterval(createHeart, 400);
-        updateTimer();
+// Сразу вызываем один раз, чтобы не ждать секунду
+updateTimer();
+
+// Функция для сердечек (оставляем как была)
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.position = 'fixed';
+    heart.style.top = '-10%';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    heart.style.animation = 'move ' + (Math.random() * 3 + 2) + 's linear forwards';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+}
+setInterval(createHeart, 400);
     </script>
 </body>
 </html>
