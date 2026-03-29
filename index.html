@@ -2,48 +2,101 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Наше Пространство ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наше Пространство</title>
     <style>
-        body { margin: 0; padding: 0; background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 100%); font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; color: #fff; overflow: hidden; }
-        .container { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 20px; border-radius: 30px; text-align: center; width: 85%; max-width: 350px; border: 1px solid rgba(255,255,255,0.3); }
-        .screenshot { width: 100%; border-radius: 20px; margin-bottom: 15px; border: 2px solid #fff; }
-        .timer-box { background: #fff; color: #ff758c; padding: 15px; border-radius: 20px; font-size: 16px; font-weight: bold; }
-        .music-btn { margin-top: 15px; background: #fff; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; }
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ffe0e9, #ffb3c6);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden;
+            color: #d11e4c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Ваш Скриншот */
+        .screenshot {
+            max-width: 85%;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .screenshot:hover {
+            transform: scale(1.03);
+        }
+
+        /* Таймер времени вместе */
+        .time-together {
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Летающие сердечки (анимация) */
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            color: #ff4d6d;
+            animation: fall linear infinite;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Сквозь города ❤️</h1>
-        <img src="screenshot.jpg" class="screenshot">
-        <div class="timer-box" id="timer">Запуск...</div>
-        <button class="music-btn" onclick="playMusic()" id="mBtn">🎵</button>
-    </div>
 
-    <audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
+    <h1 style="margin-bottom: 30px;">Ты всегда со мной ❤️</h1>
+
+    <img src="screenshot.png" alt="Наш момент" class="screenshot">
+
+    <div class="time-together" id="time-together">Загружаю...</div>
 
     <script>
-        // Дата: 21 февраля 2026. Месяц пишем числом (1 = Февраль)
-        const start = new Date(2026, 1, 21, 0, 0, 0).getTime();
+        // Дата вашего знакомства (Год, Месяц - 1, День, Час, Минута)
+        // ВНИМАНИЕ: Месяцы считаются с 0 (Январь - 0, Февраль - 1)
+        const relationshipStart = new Date(2026, 1, 21, 0, 0, 0).getTime();
 
-        function update() {
+        function updateTimer() {
             const now = new Date().getTime();
-            const d = now - start;
-            const days = Math.floor(d / 86400000);
-            const hrs = Math.floor((d % 86400000) / 3600000);
-            const mns = Math.floor((d % 3600000) / 60000);
-            const scs = Math.floor((d % 60000) / 1000);
-            document.getElementById("timer").innerHTML = Мы вместе:<br>${days}д. ${hrs}ч. ${mns}м. ${scs}с. 🥰;
-        }
-        setInterval(update, 1000);
-        update();
+            const distance = now - relationshipStart;
 
-        function playMusic() {
-            const a = document.getElementById("bgMusic");
-            const b = document.getElementById("mBtn");
-            if (a.paused) { a.play(); b.innerHTML = "⏸️"; } 
-            else { a.pause(); b.innerHTML = "🎵"; }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("time-together").innerHTML = 
+                Мы вместе уже ${days} дн., ${hours} час., ${minutes} мин. и ${seconds} сек. 🥰;
         }
+
+        // Анимация сердечек
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+
+        setInterval(updateTimer, 1000); // Обновляем таймер каждую секунду
+        setInterval(createHeart, 300); // Создаем сердечки каждые 0.3 сек.
+        updateTimer(); // Запускаем таймер сразу
     </script>
 </body>
 </html>
