@@ -8,95 +8,115 @@
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ffe0e9, #ffb3c6);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            overflow: hidden;
-            color: #d11e4c;
+            background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        /* Ваш Скриншот */
-        .screenshot {
-            max-width: 85%;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-        .screenshot:hover {
-            transform: scale(1.03);
-        }
+        h1 { font-size: 24px; margin-bottom: 20px; }
 
-        /* Таймер времени вместе */
-        .time-together {
-            margin-top: 30px;
-            font-size: 20px;
-            font-weight: bold;
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 30px;
             text-align: center;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 85%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
-        /* Летающие сердечки (анимация) */
+        .screenshot {
+            width: 100%;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 3px solid #fff;
+        }
+
+        .timer-box {
+            background: #fff;
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        /* Анимация сердечек */
         .heart {
             position: fixed;
-            font-size: 24px;
-            color: #ff4d6d;
-            animation: fall linear infinite;
-            pointer-events: none;
+            color: #fff;
+            animation: move linear infinite;
+            top: -10%;
+            z-index: -1;
         }
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        @keyframes move {
+            0% { transform: translateY(0) rotate(0); opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <h1 style="margin-bottom: 30px;">Ты всегда со мной ❤️</h1>
+    <div class="container">
+        <h1>Ты всегда со мной ❤️</h1>
+        
+        <img src="screenshot.jpg" class="screenshot" alt="Наш момент">
 
-    <img src="screenshot.png" alt="Наш момент" class="screenshot">
-
-    <div class="time-together" id="time-together">Загружаю...</div>
+        <div class="timer-box" id="timer">Загружаю...</div>
+    </div>
 
     <script>
-        // Дата вашего знакомства (Год, Месяц - 1, День, Час, Минута)
-        // ВНИМАНИЕ: Месяцы считаются с 0 (Январь - 0, Февраль - 1)
-        const relationshipStart = new Date(2026, 1, 21, 0, 0, 0).getTime();
+// Указываем дату строго в формате ISO
+const startDate = new Date("2026-02-21T00:00:00").getTime();
 
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = now - relationshipStart;
+function updateTimer() {
+    const now = new Date().getTime();
+    const diff = now - startDate;
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // Если дата еще не наступила (на всякий случай)
+    if (diff < 0) {
+        document.getElementById("timer").innerHTML = "Совсем скоро... ✨";
+        return;
+    }
 
-            document.getElementById("time-together").innerHTML = 
-                Мы вместе уже ${days} дн., ${hours} час., ${minutes} мин. и ${seconds} сек. 🥰;
-        }
+    // Расчеты
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
-        // Анимация сердечек
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerText = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 5000);
-        }
+    // Вывод текста
+    document.getElementById("timer").innerHTML = 
+        "Мы вместе уже:<br>" + days + "д. " + hours + "ч. " + mins + "м. " + secs + "с. 🥰";
+}
 
-        setInterval(updateTimer, 1000); // Обновляем таймер каждую секунду
-        setInterval(createHeart, 300); // Создаем сердечки каждые 0.3 сек.
-        updateTimer(); // Запускаем таймер сразу
+// Запускаем обновление каждую секунду
+setInterval(updateTimer, 1000);
+
+// Сразу вызываем один раз, чтобы не ждать секунду
+updateTimer();
+
+// Функция для сердечек (оставляем как была)
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.position = 'fixed';
+    heart.style.top = '-10%';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    heart.style.animation = 'move ' + (Math.random() * 3 + 2) + 's linear forwards';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+}
+setInterval(createHeart, 400);
     </script>
 </body>
 </html>
