@@ -2,121 +2,154 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наше Пространство</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Наше Пространство ❤️</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        h1 { font-size: 24px; margin-bottom: 20px; }
-
         .container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             padding: 20px;
             border-radius: 30px;
             text-align: center;
             width: 85%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
 
         .screenshot {
             width: 100%;
             border-radius: 20px;
-            margin-bottom: 20px;
-            border: 3px solid #fff;
+            margin-bottom: 15px;
+            border: 2px solid #fff;
+            display: block;
         }
 
         .timer-box {
             background: #fff;
-            color: #ff6b6b;
-            padding: 15px;
-            border-radius: 20px;
-            font-size: 16px;
+            color: #ff758c;
+            padding: 12px;
+            border-radius: 18px;
+            font-size: 14px;
             font-weight: bold;
-            line-height: 1.5;
+            line-height: 1.6;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        /* Анимация сердечек */
+        /* Кнопка музыки */
+        .music-btn {
+            margin-top: 15px;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .music-btn:active { transform: scale(0.9); }
+
+        /* Сердечки */
         .heart {
             position: fixed;
-            color: #fff;
-            animation: move linear infinite;
+            color: rgba(255,255,255,0.7);
             top: -10%;
-            z-index: -1;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
         }
-        @keyframes move {
-            0% { transform: translateY(0) rotate(0); opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Ты всегда со мной ❤️</h1>
+        <h1>Сквозь любые города ❤️</h1>
         
-        <img src="screenshot.jpg" class="screenshot" alt="Наш момент">
+        <img src="screenshot.jpg" class="screenshot" alt="Наше фото">
 
-        <div class="timer-box" id="timer">Загружаю...</div>
+        <div class="timer-box" id="timer">Считаю секунды...</div>
+
+        <button class="music-btn" onclick="toggleMusic()" id="mBtn">🎵</button>
     </div>
 
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-     // Указываем дату строго в формате ISO
-const startDate = new Date("2026-02-21T00:00:00").getTime();
+        // ДАТА: 21 февраля 2026
+        const start = new Date("2026-02-21T00:00:00").getTime();
 
-function updateTimer() {
-    const now = new Date().getTime();
-    const diff = now - startDate;
+        function update() {
+            const now = new Date().getTime();
+            const d = now - start;
 
-    // Если дата еще не наступила (на всякий случай)
-    if (diff < 0) {
-        document.getElementById("timer").innerHTML = "Совсем скоро... ✨";
-        return;
-    }
+            const days = Math.floor(d / (86400000));
+            const hrs = Math.floor((d % 86400000) / 3600000);
+            const mins = Math.floor((d % 3600000) / 60000);
+            const secs = Math.floor((d % 60000) / 1000);
 
-    // Расчеты
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById("timer").innerHTML = 
+                Мы вместе:<br>${days}д. ${hrs}ч. ${mins}м. ${secs}с. 🥰;
+        }
 
-    // Вывод текста
-    document.getElementById("timer").innerHTML = 
-        "Мы вместе уже:<br>" + days + "д. " + hours + "ч. " + mins + "м. " + secs + "с. 🥰";
-}
+        setInterval(update, 1000);
+        update();
 
-// Запускаем обновление каждую секунду
-setInterval(updateTimer, 1000);
-
-// Сразу вызываем один раз, чтобы не ждать секунду
-updateTimer();
-
-// Функция для сердечек (оставляем как была)
-function createHeart() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.innerHTML = '❤️';
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.position = 'fixed';
-    heart.style.top = '-10%';
-    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-    heart.style.animation = 'move ' + (Math.random() * 3 + 2) + 's linear forwards';
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-}
-setInterval(createHeart, 400);
+        // Музыка
+        const audio = document.getElementById("bgMusic");
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById("mBtn").innerHTML = "⏸️";
+            } else {
+                audio.pause();
+                document.getElementById("mBtn").innerHTML = "🎵";
+            }
+        }
+        // Эффект сердечек
+        function spawnHeart() {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.fontSize = Math.random() * 15 + 10 + 'px';
+            h.style.animationDuration = Math.random() * 3 + 3 + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 6000);
+        }
+        setInterval(spawnHeart, 400);
     </script>
 </body>
 </html>
